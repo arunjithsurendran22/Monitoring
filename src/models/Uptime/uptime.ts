@@ -1,32 +1,22 @@
-import { Schema, model, Model } from "mongoose";
-import { IUptime } from "./uptime-model";
+import mongoose, { Schema, Document } from 'mongoose';
 
-const UptimeSchema: Schema<IUptime> = new Schema<IUptime>({
-  timestamp: {
-    type: Date,
-    default: Date.now,
-  },
+export interface IUptime extends Document {
+  timestamp: Date;
   metadata: {
-    deviceId: {
-      type: String,
-      required: true,
-    },
-    data: {
-      type: String,
-      enum: ["connected", "disconnected"],
-      required: true,
-    },
-    timestamp: {
-      type: Number,
-      required: true,
-    },
-    duration: {
-      type: Number, // Optional field for duration
-      required: false,
-    },
+    deviceId: string;
+    data: 'connected' | 'disconnected';
+    timestamp: number;
+  };
+}
+
+const UptimeSchema: Schema = new Schema({
+  timestamp: { type: Date, required: true },
+  metadata: {
+    deviceId: { type: String, required: true },
+    data: { type: String, required: true },
+    timestamp: { type: Number, required: true },
   },
 });
 
-const UPTIME: Model<IUptime> = model<IUptime>("Uptime", UptimeSchema);
-
-export default UPTIME;
+const Uptime = mongoose.model<IUptime>('Uptime', UptimeSchema);
+export default Uptime;

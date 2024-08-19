@@ -1,28 +1,22 @@
-import { Schema, model, Model } from "mongoose";
-import { IAnalytics } from "./analytics-model";
+import mongoose, { Schema, Document } from 'mongoose';
 
-const AnalyticsSchema: Schema<IAnalytics> = new Schema<IAnalytics>({
-  timestamp: {
-    type: Date,
-    default: Date.now,
-  },
+export interface IAnalytics extends Document {
+  timestamp: Date;
   metadata: {
-    deviceId: {
-      type: String,
-      required: true,
-    },
-    data: {
-      type: Number,
-      enum: [0, 1],
-      required: true,
-    },
-    timestamp: {
-      type: Number,
-      required: true,
-    },
+    deviceId: string;
+    data: 0 | 1;
+    timestamp: number;
+  };
+}
+
+const AnalyticsSchema: Schema = new Schema({
+  timestamp: { type: Date, required: true },
+  metadata: {
+    deviceId: { type: String, required: true },
+    data: { type: Number, required: true },
+    timestamp: { type: Number, required: true },
   },
 });
 
-const ANALYTICS: Model<IAnalytics> = model<IAnalytics>("Analytics", AnalyticsSchema);
-
-export default ANALYTICS;
+const Analytics = mongoose.model<IAnalytics>('Analytics', AnalyticsSchema);
+export default Analytics;
