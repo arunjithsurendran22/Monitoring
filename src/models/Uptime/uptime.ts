@@ -10,11 +10,11 @@ export interface IUptime extends Document {
 }
 
 const UptimeSchema: Schema = new Schema({
-  timestamp: { type: Date, required: true },
+  timestamp: { type: Date, required: false },
   metadata: {
-    deviceId: { type: String, required: true },
-    data: { type: String, required: true },
-    timestamp: { type: Number, required: true },
+    deviceId: { type: String, required: false },
+    data: { type: String, required: false },
+    timestamp: { type: Number, required: false },
   },
 });
 

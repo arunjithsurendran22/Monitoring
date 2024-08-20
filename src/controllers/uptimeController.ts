@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import uptimeService from "../services/uptimeService";
+import ERROR from "../middlewares/web_server/http-error";
 
 /**
  * Get uptime data for a given device and date range.
@@ -14,12 +15,25 @@ const getUptimeData = async (
 ): Promise<void> => {
   try {
     const { deviceId, startDate, endDate } = req.query;
+    const { userId } = req.body;
 
-    if (typeof deviceId !== "string" || typeof startDate !== "string" || typeof endDate !== "string") {
-      throw new Error("Invalid query parameters");
+    if (!userId) {
+      throw new ERROR.AuthorizationError("UnAuthorized");
     }
 
-    const uptimeData = await uptimeService.getUptimeDataService(deviceId, startDate, endDate);
+    if (
+      typeof deviceId !== "string" ||
+      typeof startDate !== "string" ||
+      typeof endDate !== "string"
+    ) {
+      throw new ERROR.ValidationError("Invalid query parameters");
+    }
+
+    const uptimeData = await uptimeService.getUptimeDataService(
+      deviceId,
+      startDate,
+      endDate
+    );
 
     res.json({
       status: true,

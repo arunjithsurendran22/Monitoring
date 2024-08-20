@@ -13,21 +13,10 @@ const getUptimeDataRepo = async (
   startDate: string,
   endDate: string
 ): Promise<IUptime[]> => {
-  return UPTIME.aggregate([
-    {
-      $match: {
-        "metadata.deviceId": deviceId,
-        timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) },
-      },
-    },
-    {
-      $group: {
-        _id: { day: { $dayOfMonth: "$timestamp" }, month: { $month: "$timestamp" } },
-        duration: { $sum: "$metadata.duration" }, // Aggregating duration
-      },
-    },
-    { $sort: { _id: 1 } },
-  ]);
+  return UPTIME.find({
+    "metadata.deviceId": deviceId,
+    timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) },
+  }).sort({ timestamp: 1 }).exec();
 };
 
 export default {

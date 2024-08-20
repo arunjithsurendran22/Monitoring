@@ -1,13 +1,6 @@
 import ANALYTICS from "../models/Analytics/analytics";
 import { IAnalyticsResult } from "../models/Analytics/analytics-model";
 
-/**
- * Get analytics data for a given device and date range.
- * @param deviceId - The ID of the device.
- * @param startDate - The start date for the query.
- * @param endDate - The end date for the query.
- * @returns A promise that resolves to analytics data.
- */
 const getAnalyticsDataRepo = async (
   deviceId: string,
   startDate: string,
@@ -28,7 +21,7 @@ const getAnalyticsDataRepo = async (
         data1: { $sum: { $cond: [{ $eq: ["$metadata.data", 1] }, 1, 0] } },
       },
     },
-    { $sort: { _id: 1 } },
+    { $sort: { "_id.hour": 1 } },
   ]);
 };
 

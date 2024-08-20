@@ -1,12 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import analyticsService from "../services/analyticsService"; // Ensure correct path
+import analyticsService from "../services/analyticsService";
+import ERROR from "../middlewares/web_server/http-error";
 
-/**
- * Get analytics data for a given device and date range.
- * @param req - The request object.
- * @param res - The response object.
- * @param next - The next middleware function.
- */
 const getAnalyticsData = async (
   req: Request,
   res: Response,
@@ -14,16 +9,28 @@ const getAnalyticsData = async (
 ): Promise<void> => {
   try {
     const { deviceId, startDate, endDate } = req.query;
+    const { userId } = req.body;
 
-    if (typeof deviceId !== "string" || typeof startDate !== "string" || typeof endDate !== "string") {
-      throw new Error("Invalid query parameters");
+    if (!userId) {
+      throw new ERROR.AuthorizationError("UnAuthorized");
     }
 
-    const analyticsData = await analyticsService.getAnalyticsDataService(deviceId, startDate, endDate);
+    if (
+      typeof deviceId !== "string" ||
+      typeof startDate !== "string" ||
+      typeof endDate !== "string"
+    ) {
+      throw new ERROR.ValidationError("Invalid query parameters");
+    }
 
-    res.json({
+    const analyticsData = await analyticsService.getAnalyticsDataService(
+      deviceId,
+      startDate,
+      endDate
+    );
+
+    res.status(200).json({
       status: true,
-      statusCode: 200,
       message: "Analytics data fetched successfully!",
       data: analyticsData,
     });

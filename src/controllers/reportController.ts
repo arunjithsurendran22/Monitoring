@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import reportService from "../services/reportService";
+import ERROR from "../middlewares/web_server/http-error";
 
 /**
  * Get a comprehensive report including analytics and uptime.
@@ -14,12 +15,24 @@ const getReport = async (
 ): Promise<void> => {
   try {
     const { deviceId, startDate, endDate } = req.query;
+    const { userId } = req.body;
 
-    if (typeof deviceId !== "string" || typeof startDate !== "string" || typeof endDate !== "string") {
-      throw new Error("Invalid query parameters");
+    if (!userId) {
+      throw new ERROR.AuthorizationError("UnAuthorized");
     }
 
-    const reportData = await reportService.getReportService(deviceId, startDate, endDate);
+    if (
+      typeof deviceId !== "string" ||
+      typeof startDate !== "string" ||
+      typeof endDate !== "string"
+    ) {
+      throw new ERROR.ValidationError("Invalid query parameters");
+    }
+    const reportData = await reportService.getReportService(
+      deviceId,
+      startDate,
+      endDate
+    );
 
     res.json({
       status: true,
