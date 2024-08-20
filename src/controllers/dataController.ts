@@ -20,6 +20,8 @@ const generateData = async (
       statusCode: 200,
       message: "Data generated and saved successfully!",
     });
+    
+    
   } catch (error) {
     next(error);
   }

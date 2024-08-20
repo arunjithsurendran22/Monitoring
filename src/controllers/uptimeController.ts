@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import uptimeService from "../services/uptimeService";
 import ERROR from "../middlewares/web_server/http-error";
+import ApiResponse from "../utils/api-response";
 
 /**
  * Get uptime data for a given device and date range.
@@ -35,12 +36,13 @@ const getUptimeData = async (
       endDate
     );
 
-    res.json({
-      status: true,
-      statusCode: 200,
-      message: "Uptime data fetched successfully!",
-      data: uptimeData,
-    });
+    const apiRespose: ApiResponse<{ uptimeData: any }> = new ApiResponse<{
+      uptimeData: any;
+    }>();
+    apiRespose.message = "Uptime data fetched successfully!!";
+    apiRespose.data = { uptimeData };
+    apiRespose.statusCode = 201;
+    res.json(apiRespose);
   } catch (error) {
     next(error);
   }

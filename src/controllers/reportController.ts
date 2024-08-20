@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import reportService from "../services/reportService";
 import ERROR from "../middlewares/web_server/http-error";
+import ApiResponse from "../utils/api-response";
+import { ReportResponse } from "../@Types/common";
 
 /**
  * Get a comprehensive report including analytics and uptime.
@@ -34,12 +36,14 @@ const getReport = async (
       endDate
     );
 
-    res.json({
-      status: true,
-      statusCode: 200,
-      message: "Report generated successfully!",
-      data: reportData,
-    });
+    const apiRespose: ApiResponse<{ reportData: ReportResponse }> =
+      new ApiResponse<{
+        reportData: ReportResponse;
+      }>();
+    apiRespose.message = "Report generated successfully!";
+    apiRespose.data = { reportData };
+    apiRespose.statusCode = 201;
+    res.json(apiRespose);
   } catch (error) {
     next(error);
   }

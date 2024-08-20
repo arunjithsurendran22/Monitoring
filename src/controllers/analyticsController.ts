@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import analyticsService from "../services/analyticsService";
 import ERROR from "../middlewares/web_server/http-error";
+import ApiResponse from "../utils/api-response";
+import {AnalyticsData} from "../@Types/common"
 
 const getAnalyticsData = async (
   req: Request,
@@ -29,11 +31,14 @@ const getAnalyticsData = async (
       endDate
     );
 
-    res.status(200).json({
-      status: true,
-      message: "Analytics data fetched successfully!",
-      data: analyticsData,
-    });
+    const apiRespose: ApiResponse<{ analyticsData: AnalyticsData }> =
+      new ApiResponse<{
+        analyticsData: AnalyticsData;
+      }>();
+    apiRespose.message = "Success!";
+    apiRespose.data = { analyticsData };
+    apiRespose.statusCode = 201;
+    res.json(apiRespose);
   } catch (error) {
     next(error);
   }
